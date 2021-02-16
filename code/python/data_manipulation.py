@@ -5,54 +5,81 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def load_data (path):
-    """
-    load_trace
-    Load the trace, plaintext, ciphertext or the key from the pointed file. 
-    In the provided file (.npy):
-       + the traces are stored as (D \times Q) array of float-32bits (np.float32). 
-       + the plaintext/ciphertext  are stored as (16 \times Q) array of int-8bits (np.uint8)
-       + (not always available) the key is stored as a array of of 16 int-8bits (np.uint8)  
+# Software : Fréquence 32Mhz
+# Hardware : Fréquence 5Ghz
 
-    With D the number of samples and Q the number of traces.
+def main ():
+    choice = 0
+    data_type = ""
+
+    # Choice menu
+    while (choice != 5):
+        print("\n -- Sélection des données --")
+        print("1 : Hardware Traces - K known")
+        print("2 : Hardware Traces - K unknown")
+        print("3 : Software Traces - K known")
+        print("4 : Software Traces - K unknown")
+        print("5 : Exit")
+        choice = int(input("\nVotre choix : "))
+        
+        if choice == 1:
+            data_type = "F:\Documents\Cours\m2_cyber\m2_vet\\vet_sca\data\hardware_traces_k_known\\traces.npy"
+        elif choice == 2:
+            data_type = "F:\Documents\Cours\m2_cyber\m2_vet\\vet_sca\data\hardware_traces_k_unknown\\traces.npy"
+        elif choice == 3:
+            data_type = "F:\Documents\Cours\m2_cyber\m2_vet\\vet_sca\data\software_traces_k_known\\traces.npy"
+        elif choice == 4:
+            data_type = "F:\Documents\Cours\m2_cyber\m2_vet\\vet_sca\data\software_traces_k_unknown\\traces.npy"
+        else:
+            print("Closing...")
+            return
+
+        mean_data = compute_mean(data_type)
+        std_data = compute_standard_deviation(data_type)
+        display(mean_data, std_data)
     
-    Args:
-      - path: path of the file containing the traces. 
-
-    Returns:
-      - data: loaded data
-          
-    """
-    data = np.load (path)
-
-    return data
+    return
+   
 
 
-def display (data):
-    """"display 
-    use the 'import matplotlib.pyplot'
-    (https://matplotlib.org/) librairy to display data (array)
+def compute_mean(path):
 
-    Args:
-      - data: (\D \times \Q) array 
+    data = np.load(path)
+    data_array = np.array(data)
+    mean_data = np.mean(data_array, axis=1)
 
-    Returns:
-      - void: creat a window where the dataset is displayed. each traces 
-      \{ data^D_q \}_{q < \Q} are displayed on the same window.
-    """
+    return mean_data
+
+
+def compute_standard_deviation(path):
+
+    data = np.load(path)
+    data_array = np.array(data)
+    std_data = np.std(data_array, axis=1)
+
+    return std_data
+
+
+def display (mean, std):    
+
+    fig, (axs1, axs2) = plt.subplots(2)
+    # Share x pour lier les zoom sur l'abcisse 
+    fig.suptitle('Traces representation')
+
+    axs1.plot(mean)
+    axs1.legend(['mean'])
+    axs1.set_ylabel('Consumption')
+    axs1.set_xlabel('Time')
+
+    axs2.plot(std)
+    axs2.legend(['standard deviation'])
+    axs2.set_ylabel('Consumption')
+    axs2.set_xlabel('Time')
     
-    
-    fig, axs = plt.subplots ()
-    axs.plot (data)
-
-    axs.set_ylabel ('y-axis')
-    axs.set_xlabel ('x-axis')
-
-    axs.set_xlabel ('title')
-    
-    plt.show ()
+    plt.show()
 
     return 1
 
-
-    
+if __name__ == "__main__":
+    # execute only if run as a script
+    main()    
