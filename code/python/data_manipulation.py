@@ -2,6 +2,7 @@
 # Author: Damien Marion
 # ##############################################################################
 
+import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -12,34 +13,19 @@ def main ():
     choice = 0
     data_type = ""
 
-    # Choice menu
-    while (choice != 5):
-        print("\n -- Sélection des données --")
-        print("1 : Hardware Traces - K known")
-        print("2 : Hardware Traces - K unknown")
-        print("3 : Software Traces - K known")
-        print("4 : Software Traces - K unknown")
-        print("5 : Exit")
-        choice = int(input("\nVotre choix : "))
-        
-        if choice == 1:
-            data_type = "F:\Documents\Cours\m2_cyber\m2_vet\\vet_sca\data\hardware_traces_k_known\\traces.npy"
-        elif choice == 2:
-            data_type = "F:\Documents\Cours\m2_cyber\m2_vet\\vet_sca\data\hardware_traces_k_unknown\\traces.npy"
-        elif choice == 3:
-            data_type = "F:\Documents\Cours\m2_cyber\m2_vet\\vet_sca\data\software_traces_k_known\\traces.npy"
-        elif choice == 4:
-            data_type = "F:\Documents\Cours\m2_cyber\m2_vet\\vet_sca\data\software_traces_k_unknown\\traces.npy"
-        else:
-            print("Closing...")
-            return
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--mode', help="hardware or software", required=True)
+    parser.add_argument('--key', help="known or unknown", required=True)
 
-        mean_data = compute_mean(data_type)
-        std_data = compute_standard_deviation(data_type)
-        display(mean_data, std_data)
+    args = parser.parse_args()
+
+    data_type = "F:\Documents\Cours\m2_cyber\m2_vet\data\\" + args.mode + "_traces_k_" + args.key + "\\traces.npy"
+
+    mean_data = compute_mean(data_type)
+    std_data = compute_standard_deviation(data_type)
+    display(mean_data, std_data)
     
     return
-   
 
 
 def compute_mean(path):
