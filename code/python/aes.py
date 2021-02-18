@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import sys
+import numpy as np
 from array import array
 
 s_box = (
@@ -40,6 +41,12 @@ inv_s_box = (
     0xA0, 0xE0, 0x3B, 0x4D, 0xAE, 0x2A, 0xF5, 0xB0, 0xC8, 0xEB, 0xBB, 0x3C, 0x83, 0x53, 0x99, 0x61,
     0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D,
 )
+
+def hw (val):
+    val = np.uint8 (val)
+    val -= (val >> 1) & 0x55
+    val = (val & 0x33) + ((val >> 2) & 0x33)
+    return (val + (val >> 4 )) & 0x0f
 
 
 def sub_bytes(s):
@@ -122,27 +129,27 @@ def xor_bytes(a, b):
     """ Returns a new byte array with the elements xor'ed. """
     return bytes(i^j for i, j in zip(a, b))
 
-def sbox_output_first_round(plaintext_value, key_value):  # Pour traces software
+def sbox_output(plaintext_value, key_value):  # Pour traces software
+    print(type(plaintext_value))
+    print(plaintext_value)
+    print(type(key_value))
+    print(key_value)
     return s_box[plaintext_value^key_value]
 
-def sbox_input_last_round(ciphertext_value, key_value):
+def sbox_input(ciphertext_value, key_value):
     return inv_sbox[ciphertext_value^key_value]
 
-def sbox_input_first_round(ciphertext_value, key_value):  # Pour traces hardware
-    # à modifier pour retourner la valeur d'entrée de la Sbox au premier tour
-    return inv_sbox[ciphertext_value^key_value]
-
-def leakage_model_first_round(plaintext, key_value, target_byte): # mode 0 Damien
+def leakage_model_first_round(plaintext, key_value, target_byte): # mode 0 Damien #colonne 0 correspond au plaintext de la trace 0
     res = np.zeros (plaintext.shape[1], dtype=np.uint8)
     for i in range (len(res)):
-        res[i] = hamming_weight(sbox_output_first_round(plaintext[target_byte, i], key_value))
+        res[i] = hw(sbox_output(plaintext[target_byte, i], key_value)) 
     return res
 
 def leakage_model_last_round(ciphertext, key_value, target_byte): # mode 1 Damien
     res = np.zeros (ciphertext.shape[1], dtype=np.uint8)
     inv_mix_col = [0,5,10,15,4,9,14,3,8,13,2,7,12,1,6,11]
     for i in range (len(res)):
-        res[i] = hamming_weight(ciphertext[inv_mix_col[target_byte],i]^sbox_input_first_round(ciphertext[target_byte, i], key_value))
+        res[i] = hw(ciphertext[inv_mix_col[target_byte],i]^sbox_input(ciphertext[target_byte, i], key_value)) #distance de hamming = hw (chiffré XOR entrée sbox)
     return res
 
 class AES:

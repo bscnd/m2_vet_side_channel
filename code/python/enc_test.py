@@ -1,5 +1,6 @@
-from aes import AES, bytes2matrix, matrix2bytes, model_first_round, model_last_round, s_box
+from aes import AES, bytes2matrix, matrix2bytes, sbox_output, leakage_model_first_round
 import os
+import numpy as np
 
 def main():
     iv = os.urandom(16)
@@ -35,12 +36,19 @@ def main():
     master_key=bytes2matrix(master_key)
     print(str(master_key) + "\n")
 
-    # Test model_first_round
+    # Test sbox_output
     plaintext = b'aaaaaaaaaaaaaaaa'
     master_key = b'aaaaaaaaaaaaaaaa'
     n_octet = 0
-    sbox = model_first_round(plaintext, n_octet, (master_key))  # En décimal, à passer en hexa pour retrouver les valeurs de la table (99 = 0x63)
+    sbox = sbox_output(plaintext[n_octet], master_key[n_octet])  # En décimal, à passer en hexa pour retrouver les valeurs de la table (99 = 0x63)
     print("Sortie de la SBox au premier tour d'AES pour l'octet n° " + str(n_octet) + " : " + str(sbox))
+
+    #Test leakage_model
+    data = np.load("D:\Léo\Documents\\0-Etudes\\M2_Cyber\\Projet_SCA\\topic_M2\data\software_traces_k_known\\traces.npy")
+    result = leakage_model_first_round(data,master_key[n_octet], 0)
+    print(result)
+
+   
     
 if __name__ == "__main__":
     main()
