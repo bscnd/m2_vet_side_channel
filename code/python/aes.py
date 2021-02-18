@@ -130,10 +130,6 @@ def xor_bytes(a, b):
     return bytes(i^j for i, j in zip(a, b))
 
 def sbox_output(plaintext_value, key_value):  # Pour traces software
-    print(type(plaintext_value))
-    print(plaintext_value)
-    print(type(key_value))
-    print(key_value)
     return s_box[plaintext_value^key_value]
 
 def sbox_input(ciphertext_value, key_value):

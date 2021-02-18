@@ -44,7 +44,7 @@ def main():
     print("Sortie de la SBox au premier tour d'AES pour l'octet n° " + str(n_octet) + " : " + str(sbox))
 
     #Test leakage_model
-    data = np.load("D:\Léo\Documents\\0-Etudes\\M2_Cyber\\Projet_SCA\\topic_M2\data\software_traces_k_known\\traces.npy")
+    data = np.load("D:\Léo\Documents\\0-Etudes\\M2_Cyber\\Projet_SCA\\topic_M2\data\software_traces_k_known\\plaintext.npy")
     result = leakage_model_first_round(data,master_key[n_octet], 0)
     print(result)
 
