@@ -142,11 +142,11 @@ def leakage_model_first_round(plaintext, key_value, target_byte): # mode 0 Damie
     return res
 
 def leakage_model_first_round_allkeys(plaintext, target_byte):
-    res = np.zeros (plaintext.shape[1], dtype=np.uint8)
+    allkeys_model = [0] * 256
+    print(allkeys_model[1])
     for key_value in range (256):
-        for i in range (len(res)):
-            res[i][key_value] = hw(sbox_output(plaintext[target_byte, i], key_value)) 
-    return res
+        allkeys_model [key_value] = leakage_model_first_round(plaintext, key_value, target_byte)
+    return allkeys_model
 
 
 def leakage_model_last_round(ciphertext, key_value, target_byte): # mode 1 Damien, pour un seul octet
