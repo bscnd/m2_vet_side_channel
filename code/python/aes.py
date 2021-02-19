@@ -143,7 +143,6 @@ def leakage_model_first_round(plaintext, key_value, target_byte): # mode 0 Damie
 
 def leakage_model_first_round_allkeys(plaintext, target_byte):
     allkeys_model = [0] * 256
-    print(allkeys_model[1])
     for key_value in range (256):
         allkeys_model [key_value] = leakage_model_first_round(plaintext, key_value, target_byte)
     return allkeys_model
