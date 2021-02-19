@@ -1,4 +1,4 @@
-from aes import AES, bytes2matrix, matrix2bytes, sbox_output, leakage_model_first_round
+from aes import AES, bytes2matrix, matrix2bytes, sbox_output, leakage_model_first_round, leakage_model_first_round_allkeys
 import os
 import numpy as np
 
@@ -45,7 +45,8 @@ def main():
 
     #Test leakage_model
     data = np.load("D:\Léo\Documents\\0-Etudes\\M2_Cyber\\Projet_SCA\\topic_M2\data\software_traces_k_known\\plaintext.npy")
-    result = leakage_model_first_round(data,master_key[n_octet], 0)
+    #result = leakage_model_first_round(data,master_key[n_octet], 0)
+    result = leakage_model_first_round_allkeys(data, 0)
     print(result)
 
    

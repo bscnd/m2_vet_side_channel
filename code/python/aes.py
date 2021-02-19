@@ -135,13 +135,21 @@ def sbox_output(plaintext_value, key_value):  # Pour traces software
 def sbox_input(ciphertext_value, key_value):
     return inv_sbox[ciphertext_value^key_value]
 
-def leakage_model_first_round(plaintext, key_value, target_byte): # mode 0 Damien #colonne 0 correspond au plaintext de la trace 0
+def leakage_model_first_round(plaintext, key_value, target_byte): # mode 0 Damien, pour un seul octet et un seul
     res = np.zeros (plaintext.shape[1], dtype=np.uint8)
     for i in range (len(res)):
         res[i] = hw(sbox_output(plaintext[target_byte, i], key_value)) 
     return res
 
-def leakage_model_last_round(ciphertext, key_value, target_byte): # mode 1 Damien
+def leakage_model_first_round_allkeys(plaintext, target_byte):
+    res = np.zeros (plaintext.shape[1], dtype=np.uint8)
+    for key_value in range (256):
+        for i in range (len(res)):
+            res[i][key_value] = hw(sbox_output(plaintext[target_byte, i], key_value)) 
+    return res
+
+
+def leakage_model_last_round(ciphertext, key_value, target_byte): # mode 1 Damien, pour un seul octet
     res = np.zeros (ciphertext.shape[1], dtype=np.uint8)
     inv_mix_col = [0,5,10,15,4,9,14,3,8,13,2,7,12,1,6,11]
     for i in range (len(res)):
