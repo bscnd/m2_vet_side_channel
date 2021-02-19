@@ -1,6 +1,7 @@
 from aes import AES, bytes2matrix, matrix2bytes, sbox_output, leakage_model_first_round, leakage_model_first_round_allkeys
 import os
 import numpy as np
+import matplotlib.pyplot as plt
 from pearson import get_highest_pearson_coeff
 
 def main():
@@ -49,9 +50,10 @@ def main():
     model_first_round = leakage_model_first_round_allkeys(plaintext, 0)
 
     traces = np.load("F:\Documents\Cours\m2_cyber\m2_vet\data\software_traces_k_known\\traces.npy")
-    pearson_coeff = []  
-    max_f, indexes_f = get_highest_pearson_coeff(traces, model_first_round)
 
+    all_assomptions, max_f, indexes_f = get_highest_pearson_coeff(traces, model_first_round)
+    plt.plot(all_assomptions)
+    plt.show()
    
     
 if __name__ == "__main__":

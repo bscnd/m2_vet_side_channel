@@ -138,7 +138,7 @@ def sbox_input(ciphertext_value, key_value):
 def leakage_model_first_round(plaintext, key_value, target_byte): # mode 0 Damien, pour un seul octet et un seul
     res = np.zeros (plaintext.shape[1], dtype=np.uint8)
     for i in range (len(res)):
-        res[i] = hw(sbox_output(plaintext[target_byte, i], key_value)) 
+        res[i] = hw(sbox_output(plaintext[target_byte, i], key_value))-4
     return res
 
 def leakage_model_first_round_allkeys(plaintext, target_byte):
