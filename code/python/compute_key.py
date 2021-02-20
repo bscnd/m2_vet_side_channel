@@ -47,8 +47,8 @@ def compute_software_key(plaintext_path, ciphertext_path, traces_path):
     # plt.show()
 
     computed_key = [123, 86, 39, 250, 142, 4, 139, 87, 144, 205, 225, 221, 217, 24, 29, 31]
-    aes = AES (bytes(computed_key))
-    assert np.all(bytes (plaintext [:, 0]) == aes.decrypt_block (bytes (ciphertext [:, 0])))
+    
+    check_decrypt_cipher(computed_key, ciphertext, plaintext)
 
 
 def compute_hardware_key(plaintext_path, ciphertext_path, traces_path, key_path):
@@ -76,9 +76,16 @@ def compute_hardware_key(plaintext_path, ciphertext_path, traces_path, key_path)
     # Compute all round keys and the master key from k10
     computed_key = aes_tool.inverse_expand_key(k10)[9]
 
-    aes_tool = AES (computed_key)
-    assert np.all(bytes (plaintext [:, 0]) == aes_tool.decrypt_block (bytes (ciphertext [:, 0])))
+    check_decrypt_cipher(computed_key, ciphertext, plaintext)
 
-    
+#The following two functions check decrypting/encrypting with the previously computed_key (a.k.a master key)
+def check_decrypt_cipher(master_k, ciphertext, plaintext):
+    aes_tool = AES(bytes(master_k))
+    assert np.all(bytes (plaintext [:, 0]) == aes_tool.decrypt_block(bytes(ciphertext [:, 0])))
+
+def check_encrypt_plain(masker_k, plaintext, ciphertext):
+    aes_tool = AES(bytes(master_k))
+    assert np.all(bytes (ciphertext [:, 0]) == aes_tool.encrypt_block(bytes(plaintext [:, 0])))
+
 if __name__ == "__main__":
     main()
