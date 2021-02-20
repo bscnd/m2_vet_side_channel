@@ -1,19 +1,5 @@
 import numpy as np
 
-
-#This fonction gives key assumptions for a given plaintext/ciphertext and a targeted byte
-#Guess byte corresponds to k
-""" def compute_keys_models(plaintext, ciphertext, targeted_byte):
-    key_model_first = []
-    key_model_last = []
-    for k in range(256):
-        for q in range(len(plaintext)):
-            #only first_round ?
-            key_model_first[k][q]=model_first_round(plaintext[q], targeted_byte, k)
-            key_model_last[k][q]=model_last_round(ciphertext[q], targeted_byte, k)
-    return key_model_first, key_model_last """
-
-
 #This function gives the value and indexes for the highest pearson coefficient for a given traces and models
 def get_highest_pearson_coeff(traces, model_first): #, model_last):
 

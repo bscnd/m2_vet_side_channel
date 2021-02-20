@@ -24,7 +24,7 @@ s_box = (
     0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16,
 )
 
-inv_s_box = (
+inv_sbox = (
     0x52, 0x09, 0x6A, 0xD5, 0x30, 0x36, 0xA5, 0x38, 0xBF, 0x40, 0xA3, 0x9E, 0x81, 0xF3, 0xD7, 0xFB,
     0x7C, 0xE3, 0x39, 0x82, 0x9B, 0x2F, 0xFF, 0x87, 0x34, 0x8E, 0x43, 0x44, 0xC4, 0xDE, 0xE9, 0xCB,
     0x54, 0x7B, 0x94, 0x32, 0xA6, 0xC2, 0x23, 0x3D, 0xEE, 0x4C, 0x95, 0x0B, 0x42, 0xFA, 0xC3, 0x4E,
@@ -59,7 +59,7 @@ def sub_bytes(s):
 def inv_sub_bytes(s):
     for i in range(4):
         for j in range(4):
-            s[i][j] = inv_s_box[s[i][j]]
+            s[i][j] = inv_sbox[s[i][j]]
 
 
 def shift_rows(s):
@@ -144,7 +144,7 @@ def leakage_model_first_round(plaintext, key_value, target_byte): # mode 0 Damie
 
 def leakage_model_first_round_allkeys(plaintext, target_byte):
     allkeys_model = [0] * 256
-    for key_value in tqdm(range (256), leave=False, desc = f'byte {target_byte}'):
+    for key_value in tqdm(range (256), leave=False, desc = f'Octet N°{target_byte}/16'):
         allkeys_model [key_value] = leakage_model_first_round(plaintext, key_value, target_byte)
     return allkeys_model
 
@@ -155,6 +155,12 @@ def leakage_model_last_round(ciphertext, key_value, target_byte): # mode 1 Damie
     for i in range (len(res)):
         res[i] = hw(ciphertext[inv_mix_col[target_byte],i]^sbox_input(ciphertext[target_byte, i], key_value)) #distance de hamming = hw (chiffré XOR entrée sbox)
     return res
+
+def leakage_model_last_round_allkeys(ciphertext, target_byte):
+    allkeys_model = [0] * 256
+    for key_value in tqdm(range (256), leave=False, desc = f'Octet N°{target_byte}/16'):
+        allkeys_model [key_value] = leakage_model_last_round(ciphertext, key_value, target_byte)
+    return allkeys_model
 
 class AES:
     """
