@@ -18,10 +18,10 @@ SOFTWARE_TRACES_PATH = "/home/scorpio/Documents/SCA/topic_M2/data/software_trace
 #HARDWARE_CIPHERTEXT_PATH = "F:\Documents\Cours\m2_cyber\m2_vet\data\hardware_traces_k_known\\ciphertext.npy"
 #HARDWARE_TRACES_PATH = "F:\Documents\Cours\m2_cyber\m2_vet\data\hardware_traces_k_known\\traces.npy"
 #HARDWARE_KEY_PATH = "F:\Documents\Cours\m2_cyber\m2_vet\data\hardware_traces_k_known\\key.npy"
-HARDWARE_PLAINTEXT_PATH = "/home/scorpio/Documents/SCA/topic_M2/data/hardware_traces_k_known/plaintext.npy"
-HARDWARE_CIPHERTEXT_PATH = "/home/scorpio/Documents/SCA/topic_M2/data/hardware_traces_k_known/ciphertext.npy"
-HARDWARE_TRACES_PATH = "/home/scorpio/Documents/SCA/topic_M2/data/hardware_traces_k_known/traces.npy"
-HARDWARE_KEY_PATH = "/home/scorpio/Documents/SCA/topic_M2/data/hardware_traces_k_known/key.npy"
+HARDWARE_PLAINTEXT_PATH = "/home/scorpio/Documents/SCA/topic_M2/data/hardware_traces_k_unknown/plaintext.npy"
+HARDWARE_CIPHERTEXT_PATH = "/home/scorpio/Documents/SCA/topic_M2/data/hardware_traces_k_unknown/ciphertext.npy"
+HARDWARE_TRACES_PATH = "/home/scorpio/Documents/SCA/topic_M2/data/hardware_traces_k_unknown/traces.npy"
+HARDWARE_KEY_PATH = "/home/scorpio/Documents/SCA/topic_M2/data/hardware_traces_k_unknown/key.npy"
 
 def main():
 
@@ -63,7 +63,9 @@ def compute_hardware_key(plaintext_path, ciphertext_path, traces_path, key_path)
     #k10 = compute_model(0, ciphertext, traces)
     
     #K10 (save for k_known)
-    k10 = [151, 225, 230, 156, 11, 93, 34, 92, 88, 125, 245, 7, 176, 173, 134, 185]
+    #k10 = [151, 225, 230, 156, 11, 93, 34, 92, 88, 125, 245, 7, 176, 173, 134, 185]
+    #K10 (save for k_unknown)
+    k10 = [220, 153, 148, 229, 235, 99, 127, 52, 71, 77, 200, 1, 147, 133, 148, 27]
 
     # Instanciate an AES object to invert the last round key (won't be using the master key).
     random_key = os.urandom(16)
@@ -83,7 +85,6 @@ def compute_model(model, text, traces):
         #firt_round or last_round ?
         if(model):
             s_model = leakage_model_first_round_allkeys(text, i) #text=plaintext
-            
         else:
             s_model = leakage_model_last_round_allkeys(text, i) #text=ciphertext
 
@@ -105,7 +106,7 @@ def check_decrypt_cipher(master_k, ciphertext, plaintext):
     aes_tool = AES(bytes(master_k))
     assert np.all(bytes (plaintext [:, 0]) == aes_tool.decrypt_block(bytes(ciphertext [:, 0])))
 
-def check_encrypt_plain(masker_k, plaintext, ciphertext):
+def check_encrypt_plain(master_k, plaintext, ciphertext):
     aes_tool = AES(bytes(master_k))
     assert np.all(bytes (ciphertext [:, 0]) == aes_tool.encrypt_block(bytes(plaintext [:, 0])))
 

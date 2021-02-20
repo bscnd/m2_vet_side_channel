@@ -18,8 +18,8 @@ def get_highest_pearson_coeff(traces, model_first): #, model_last):
     # compute pearson coeff
     coeffs_first = abs((Q*sxy - np.dot (sx, sy))/np.dot (np.sqrt (Q*sxx - (sx**2)), np.sqrt (Q*syy - (sy**2))))
 
+    #Get maximum value and indexes
     max_f = np.max(coeffs_first)
-    # max_l = np.max(coeffs_last)
     indexes_f = np.unravel_index (coeffs_first.argmax(), coeffs_first.shape)
-    # indexes_l = np.where(coeffs_last == max_l)
-    return coeffs_first, max_f, indexes_f #, max_l, indexes_l
+    
+    return coeffs_first, max_f, indexes_f
